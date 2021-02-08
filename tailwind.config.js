@@ -6,6 +6,9 @@ module.exports = {
   purge: ["./src/**/*.{js,ts,jsx,tsx}", "./pages/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      gridTemplateRows: {
+        "layout": '64px minmax(0, 1fr)'
+      },
       colors: {},
     },
   },

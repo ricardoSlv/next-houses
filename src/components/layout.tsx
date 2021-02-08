@@ -10,7 +10,7 @@ const Layout: FC<IProps> = ({ main }) => {
   const { logout, authenticated } = useAuth()
 
   return (
-    <div className='bg-gray-900 max-w-screen-xl mx-auto text-white'>
+    <div className='bg-gray-900 w-screen-xl h-screen mx-auto text-white grid grid-rows-layout'>
       <nav className='bg-gray-800 h-16'>
         <ul className='px-6 flex items-center justify-between h-16'>
           <li>
