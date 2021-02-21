@@ -1,0 +1,23 @@
+{
+  "viewState": {
+    "width": 960,
+    "height": 508,
+    "latitude": 43,
+    "longitude": -79,
+    "zoom": 10,
+    "bearing": 0,
+    "pitch": 0,
+    "altitude": 1.5,
+    "maxZoom": 15,
+    "minZoom": 5,
+    "maxPitch": 60,
+    "minPitch": 0,
+    "transitionDuration": 0,
+    "transitionInterpolator": {
+      "propNames": ["longitude", "latitude", "zoom", "bearing", "pitch"]
+    },
+    "transitionInterruption": 1
+  },
+  "interactionState": { "isDragging": false },
+  "oldViewState": {}
+}

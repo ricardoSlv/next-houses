@@ -1,3 +1,4 @@
 # Prisma Migrate lockfile v1
 
 20210208221338-create-houses
+20210217173206-coordinates-string-to-float

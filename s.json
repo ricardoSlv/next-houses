@@ -1,0 +1,47 @@
+{
+  "viewState": {
+    "width": 960,
+    "height": 509,
+    "latitude": 41.57280171793283,
+    "longitude": -8.483343103467993,
+    "zoom": 15,
+    "bearing": 0,
+    "pitch": 0,
+    "altitude": 1.5,
+    "maxZoom": 15,
+    "minZoom": 5,
+    "maxPitch": 60,
+    "minPitch": 0,
+    "transitionDuration": 300,
+    "transitionInterpolator": {
+      "propNames": ["longitude", "latitude", "zoom", "bearing", "pitch"]
+    },
+    "transitionInterruption": 1
+  },
+  "interactionState": {
+    "isDragging": false,
+    "isPanning": true,
+    "inTransition": true,
+    "isZooming": false,
+    "isRotating": false
+  },
+  "oldViewState": {
+    "width": 960,
+    "height": 509,
+    "latitude": 41.57282178389034,
+    "longitude": -8.483316281376384,
+    "zoom": 15,
+    "bearing": 0,
+    "pitch": 0,
+    "altitude": 1.5,
+    "maxZoom": 15,
+    "minZoom": 5,
+    "maxPitch": 60,
+    "minPitch": 0,
+    "transitionDuration": 0,
+    "transitionInterpolator": {
+      "propNames": ["longitude", "latitude", "zoom", "bearing", "pitch"]
+    },
+    "transitionInterruption": 1
+  }
+}
