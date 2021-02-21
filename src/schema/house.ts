@@ -28,6 +28,14 @@ class CoordinatesInput {
   @Field((_type) => Float)
   longitude!: number
 }
+@InputType()
+class BoundsInput {
+  @Field((_type) => CoordinatesInput)
+  sw!: CoordinatesInput
+
+  @Field((_type) => CoordinatesInput)
+  ne!: CoordinatesInput
+}
 
 @InputType()
 export class HouseInput {
@@ -89,7 +97,11 @@ class House {
 
     return ctx.prisma.house.findMany({
       where: {
-        latitude: { gte: minLat, lte: maxLat, not: { equals: this.latitude } },
+        latitude: {
+          gte: minLat,
+          lte: maxLat,
+          not: { equals: this.latitude },
+        },
         longitude: {
           gte: minLon,
           lte: maxLon,
@@ -107,6 +119,17 @@ export class HouseResolver {
   @Query((_returns) => House, { nullable: true })
   async house(@Arg('id') id: string, @Ctx() ctx: Context) {
     return ctx.prisma.house.findOne({ where: { id: parseInt(id) } })
+  }
+
+  @Query((_returns) => [House], { nullable: false })
+  async houses(@Arg('bounds') bounds: BoundsInput, @Ctx() ctx: Context) {
+    return ctx.prisma.house.findMany({
+      where: {
+        latitude: { gte: bounds.sw.latitude, lte: bounds.ne.latitude },
+        longitude: { gte: bounds.sw.longitude, lte: bounds.ne.longitude },
+      },
+      take: 50,
+    })
   }
 
   @Authorized()

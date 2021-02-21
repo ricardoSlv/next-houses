@@ -9,6 +9,9 @@ module.exports = {
       gridTemplateRows: {
         "layout": '64px minmax(0, 1fr)'
       },
+      maxWidth: {
+        "title": '30ch'
+      },
       colors: {},
     },
   },

@@ -12,17 +12,8 @@ export function useLocalState<T = undefined>(key: string, initial: T) {
 
   useEffect(() => {
     if (window?.localStorage) {
-      console.log(
-        (value as any).viewState?.transitionInterpolator,
-        (value as any).viewState?.transitionInterpolator?.arePropsEqual,
-        (value as any).oldViewState?.transitionInterpolator?.arePropsEqual
-      )
-      try {
-        const jsonString = JSON.stringify(value)
-        window.localStorage.setItem(key, jsonString)
-      } catch (e) {
-        console.log(e)
-      }
+      const jsonString = JSON.stringify(value)
+      window.localStorage.setItem(key, jsonString)
     }
   }, [value])
   return [value, setValue] as [typeof value, typeof setValue]
