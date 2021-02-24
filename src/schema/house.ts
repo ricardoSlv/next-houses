@@ -183,13 +183,8 @@ export class HouseResolver {
 
     if (!house || house.userId !== ctx.uid) return false
 
-    await ctx.prisma.house.delete({
+    return !!(await ctx.prisma.house.delete({
       where: { id: houseId },
-    })
-    return true
-
-    return await ctx.prisma.house.delete({
-      where: { id: houseId },
-    })
+    }))
   }
 }

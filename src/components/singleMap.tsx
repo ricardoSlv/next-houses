@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ReactMapGL, { Marker, NavigationControl } from 'react-map-gl'
 import { ViewState } from 'react-map-gl/index'
@@ -21,6 +21,14 @@ export default function SingleMap({ house, nearby }: IProps) {
     longitude: house.longitude,
     zoom: 13,
   })
+
+  useEffect(() => {
+    setViewport((v) => ({
+      ...v,
+      latitude: house.latitude,
+      longitude: house.longitude,
+    }))
+  }, [house])
 
   return (
     <section className='text-black h-full'>
@@ -61,7 +69,7 @@ export default function SingleMap({ house, nearby }: IProps) {
             offsetLeft={-16}
             offsetTop={-16}
           >
-            <Link href={`/houses/${nearH.id}`}>
+            <Link href={`/houses/${nearH.id}`} shallow>
               <a>
                 <img
                   src='/home-solid.svg'

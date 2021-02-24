@@ -48,7 +48,6 @@ export const AuthProvider: FC = ({ children }) => {
           setUser(null)
         }
       })
-
     return () => {
       cancelAuthListener()
     }

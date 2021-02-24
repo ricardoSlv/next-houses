@@ -63,12 +63,15 @@ function HouseData({ id }: { id: string }) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const uid = await loadIdToken(req as NextApiRequest)
-  if (!uid) {
-    res.setHeader('location', '/auth')
-    res.statusCode = 302
-    res.end()
-  }
-  return { props: {} }
+
+  if (!uid)
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/auth',
+      },
+    }
+  else return { props: {} }
 }

@@ -9,6 +9,7 @@ import {
   ShowHouseQueryVariables,
 } from 'src/generated/ShowHouseQuery'
 import React from 'react'
+import { useLastData } from 'src/utils/useLastData'
 
 const SHOW_HOUSE_QUERY = gql`
   query ShowHouseQuery($id: String!) {
@@ -38,12 +39,13 @@ export default function ShowHouse() {
 }
 
 function HouseData({ id }: { id: string }) {
-  const { data, loading } = useQuery<ShowHouseQuery, ShowHouseQueryVariables>(
-    SHOW_HOUSE_QUERY,
-    { variables: { id } }
-  )
+  const { data: apollodata } = useQuery<
+    ShowHouseQuery,
+    ShowHouseQueryVariables
+  >(SHOW_HOUSE_QUERY, { variables: { id } })
+  const data = useLastData(apollodata)
 
-  if (loading || !data) return <Layout main={<section>Loading...</section>} />
+  if (!data) return <Layout main={<section>Loading...</section>} />
   if (!data.house)
     return <Layout main={<section>Unable to load House</section>} />
 
