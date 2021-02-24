@@ -30,7 +30,6 @@ const CREATE_HOUSE_MUTATION = gql`
     }
   }
 `
-
 const UPDATE_HOUSE_MUTATION = gql`
   mutation UpdateHouseMutation($id: String!, $input: HouseInput!) {
     updateHouse(id: $id, input: $input) {
@@ -48,6 +47,25 @@ const UPDATE_HOUSE_MUTATION = gql`
 
 interface IUploadImageResponse {
   secure_url: string
+}
+interface IFormData {
+  address: string
+  latitude: number
+  longitude: number
+  bedrooms: string
+  image: FileList
+}
+interface IHouse {
+  id: string
+  image: string
+  publicId: string
+  address: string
+  latitude: number
+  longitude: number
+  bedrooms: number
+}
+interface IProps {
+  house?: IHouse
 }
 
 async function uploadImage(
@@ -68,26 +86,6 @@ async function uploadImage(
   })
 
   return await response.json()
-}
-interface IFormData {
-  address: string
-  latitude: number
-  longitude: number
-  bedrooms: string
-  image: FileList
-}
-
-interface IHouse {
-  id: string
-  image: string
-  publicId: string
-  address: string
-  latitude: number
-  longitude: number
-  bedrooms: number
-}
-interface IProps {
-  house?: IHouse
 }
 
 export default function HouseForm({ house }: IProps) {
