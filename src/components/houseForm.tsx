@@ -3,16 +3,16 @@ import { useForm } from 'react-hook-form'
 import { useMutation, gql } from '@apollo/client'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-// import { Image } from "cloudinary-react";
+import { Image } from 'cloudinary-react'
 import { SearchBox } from './searchBox'
 import {
   CreateHouseMutation,
   CreateHouseMutationVariables,
 } from 'src/generated/CreateHouseMutation'
-// import {
-//   UpdateHouseMutation,
-//   UpdateHouseMutationVariables,
-// } from "src/generated/UpdateHouseMutation";
+import {
+  UpdateHouseMutation,
+  UpdateHouseMutationVariables,
+} from 'src/generated/UpdateHouseMutation'
 import { CreateSignatureMutation } from 'src/generated/CreateSignatureMutation'
 
 const SIGNATURE_MUTATION = gql`
@@ -27,6 +27,21 @@ const CREATE_HOUSE_MUTATION = gql`
   mutation CreateHouseMutation($input: HouseInput!) {
     createHouse(input: $input) {
       id
+    }
+  }
+`
+
+const UPDATE_HOUSE_MUTATION = gql`
+  mutation UpdateHouseMutation($id: String!, $input: HouseInput!) {
+    updateHouse(id: $id, input: $input) {
+      id
+      userId
+      image
+      publicId
+      address
+      latitude
+      longitude
+      bedrooms
     }
   }
 `
@@ -54,7 +69,6 @@ async function uploadImage(
 
   return await response.json()
 }
-
 interface IFormData {
   address: string
   latitude: number
@@ -63,9 +77,20 @@ interface IFormData {
   image: FileList
 }
 
-interface IProps {}
+interface IHouse {
+  id: string
+  image: string
+  publicId: string
+  address: string
+  latitude: number
+  longitude: number
+  bedrooms: number
+}
+interface IProps {
+  house?: IHouse
+}
 
-export default function HouseForm({}: IProps) {
+export default function HouseForm({ house }: IProps) {
   const router = useRouter()
 
   const [submitting, setSubmitting] = useState(false)
@@ -77,7 +102,16 @@ export default function HouseForm({}: IProps) {
     setValue,
     errors,
     watch,
-  } = useForm<IFormData>({ defaultValues: {} })
+  } = useForm<IFormData>({
+    defaultValues: house
+      ? {
+          address: house.address,
+          latitude: house.latitude,
+          longitude: house.longitude,
+          bedrooms: house.bedrooms.toString(),
+        }
+      : {},
+  })
 
   const address = watch('address')
 
@@ -90,6 +124,11 @@ export default function HouseForm({}: IProps) {
     CreateHouseMutationVariables
   >(CREATE_HOUSE_MUTATION)
 
+  const [updateHouse] = useMutation<
+    UpdateHouseMutation,
+    UpdateHouseMutationVariables
+  >(UPDATE_HOUSE_MUTATION)
+
   useEffect(() => {
     register({ name: 'address' }, { required: 'Please enter your address' })
     register({ name: 'latitude' }, { required: true, min: -90, max: 90 })
@@ -98,12 +137,9 @@ export default function HouseForm({}: IProps) {
 
   const handleCreate = async (data: IFormData) => {
     const { data: signatureData } = await createSignature()
-    console.log(data)
     if (signatureData) {
-      console.log(signatureData)
       const { signature, timestamp } = signatureData.createImageSignature
       const imageData = await uploadImage(data.image[0], signature, timestamp)
-      console.log(imageData)
 
       const { data: houseData } = await createHouse({
         variables: {
@@ -127,9 +163,42 @@ export default function HouseForm({}: IProps) {
     }
   }
 
+  const handleUpdate = async (currentHouse: IHouse, data: IFormData) => {
+    let image = currentHouse.image
+
+    if (data.image[0]) {
+      const { data: signatureData } = await createSignature()
+      if (signatureData) {
+        const { signature, timestamp } = signatureData.createImageSignature
+        const imageData = await uploadImage(data.image[0], signature, timestamp)
+        image = imageData.secure_url
+      }
+    }
+
+    const { data: houseData } = await updateHouse({
+      variables: {
+        id: currentHouse.id,
+        input: {
+          address: data.address,
+          image: image,
+          coordinates: {
+            latitude: data.latitude,
+            longitude: data.longitude,
+          },
+          bedrooms: parseInt(data.bedrooms),
+        },
+      },
+    })
+
+    if (houseData?.updateHouse) {
+      router.push(`/houses/${currentHouse.id}`)
+    }
+  }
+
   const onSubmit = (data: IFormData) => {
     setSubmitting(false)
-    handleCreate(data)
+    if (house) handleUpdate(house, data)
+    else handleCreate(data)
   }
 
   return (
@@ -137,7 +206,9 @@ export default function HouseForm({}: IProps) {
       onSubmit={handleSubmit(onSubmit)}
       className='mx-auto w-full max-w-xl py-4'
     >
-      <h1 className='text-xl'>Add a new house</h1>
+      <h1 className='text-xl'>
+        {house ? `Editing ${house.address}` : 'Add a new house'}
+      </h1>
       <div className='mt-4'>
         <label htmlFor='search' className='block'>
           Search for your address
@@ -148,7 +219,7 @@ export default function HouseForm({}: IProps) {
             setValue('latitude', latitude)
             setValue('longitude', longitude)
           }}
-          defaultValue=''
+          defaultValue={house ? house.address : ''}
         />
         {errors.address && <p>{errors.address.message}</p>}
       </div>
@@ -169,7 +240,7 @@ export default function HouseForm({}: IProps) {
               accept='image/*'
               ref={register({
                 validate: (fileList: FileList) => {
-                  if (fileList.length === 1) return true
+                  if (house || fileList.length === 1) return true
                   return 'Please upload one File'
                 },
               })}
@@ -184,13 +255,27 @@ export default function HouseForm({}: IProps) {
                 }
               }}
             />
-            {previewImage && (
+            {previewImage ? (
               <img
                 src={previewImage}
                 style={{ width: 576, height: (9 / 16) * 576 }}
-                className='mt-4 w-full object-cover'
-              ></img>
-            )}
+                className='mt-4 object-cover'
+              />
+            ) : house ? (
+              <Image
+                className='mt-4 w-full'
+                cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+                publicId={house.publicId}
+                alt={house.address}
+                secure
+                dpr='auto'
+                quality=''
+                width={576}
+                height={(9 / 16) * 576}
+                crop='fill'
+                gravity='auto'
+              />
+            ) : null}
             {errors.image && <p>{errors.image.message}</p>}
           </div>
           <div className='mt-4'>
@@ -218,7 +303,7 @@ export default function HouseForm({}: IProps) {
             >
               Save
             </button>{' '}
-            <Link href='/'>
+            <Link href={house ? `/houses/${house.id}` : '/'}>
               <a>Cancel</a>
             </Link>
           </div>

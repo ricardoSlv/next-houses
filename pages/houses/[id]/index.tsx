@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { Image } from 'cloudinary-react'
 import { useQuery, gql } from '@apollo/client'
 import Layout from 'src/components/layout'
-// import HouseNav from "src/components/houseNav";
+import HouseNav from 'src/components/houseNav'
 import SingleMap from 'src/components/singleMap'
 import {
   ShowHouseQuery,
@@ -54,6 +54,7 @@ function HouseData({ id }: { id: string }) {
       main={
         <main className='flex flex-wrap overflow-scroll'>
           <section className='sm:w-full md:w-1/2 h-full p-4 flex flex-col'>
+            <HouseNav house={house} />
             <h1 className='text-3xl my-2'>{house.address}</h1>
             <div className='max-h-full overflow-hidden'>
               <Image

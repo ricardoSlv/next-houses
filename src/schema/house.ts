@@ -12,7 +12,7 @@ import {
   Ctx,
   Authorized,
 } from 'type-graphql'
-import { Min, Max, max } from 'class-validator'
+import { Min, Max } from 'class-validator'
 import { getBoundsOfDistance } from 'geolib'
 import { Context, AuthorizedContext } from './context'
 
@@ -123,7 +123,7 @@ export class HouseResolver {
 
   @Query((_returns) => [House], { nullable: false })
   async houses(@Arg('bounds') bounds: BoundsInput, @Ctx() ctx: Context) {
-    return ctx.prisma.house.findMany({
+    return await ctx.prisma.house.findMany({
       where: {
         latitude: { gte: bounds.sw.latitude, lte: bounds.ne.latitude },
         longitude: { gte: bounds.sw.longitude, lte: bounds.ne.longitude },
@@ -147,6 +147,49 @@ export class HouseResolver {
         longitude: input.coordinates.longitude,
         bedrooms: input.bedrooms,
       },
+    })
+  }
+
+  @Authorized()
+  @Mutation((_returns) => House, { nullable: true })
+  async updateHouse(
+    @Arg('id') id: string,
+    @Arg('input') input: HouseInput,
+    @Ctx() ctx: AuthorizedContext
+  ) {
+    const houseId = parseInt(id)
+    const house = await ctx.prisma.house.findOne({ where: { id: houseId } })
+
+    if (!house || house.userId != ctx.uid) return null
+
+    return await ctx.prisma.house.update({
+      where: { id: houseId },
+      data: {
+        image: input.image,
+        address: input.address,
+        latitude: input.coordinates.latitude,
+        longitude: input.coordinates.longitude,
+        bedrooms: input.bedrooms,
+      },
+    })
+  }
+  @Authorized()
+  @Mutation((_returns) => Boolean, { nullable: false })
+  async deleteHouse(@Arg('id') id: string, @Ctx() ctx: AuthorizedContext) {
+    const houseId = parseInt(id)
+    const house = await ctx.prisma.house.findOne({
+      where: { id: houseId },
+    })
+
+    if (!house || house.userId !== ctx.uid) return false
+
+    await ctx.prisma.house.delete({
+      where: { id: houseId },
+    })
+    return true
+
+    return await ctx.prisma.house.delete({
+      where: { id: houseId },
     })
   }
 }
