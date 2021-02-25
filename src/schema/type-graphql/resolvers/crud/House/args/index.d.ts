@@ -1,0 +1,10 @@
+export { AggregateHouseArgs } from "./AggregateHouseArgs";
+export { CreateHouseArgs } from "./CreateHouseArgs";
+export { DeleteHouseArgs } from "./DeleteHouseArgs";
+export { DeleteManyHouseArgs } from "./DeleteManyHouseArgs";
+export { FindFirstHouseArgs } from "./FindFirstHouseArgs";
+export { FindManyHouseArgs } from "./FindManyHouseArgs";
+export { FindUniqueHouseArgs } from "./FindUniqueHouseArgs";
+export { UpdateHouseArgs } from "./UpdateHouseArgs";
+export { UpdateManyHouseArgs } from "./UpdateManyHouseArgs";
+export { UpsertHouseArgs } from "./UpsertHouseArgs";

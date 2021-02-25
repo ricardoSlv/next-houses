@@ -1,0 +1,10 @@
+export { FindUniqueHouseResolver } from "./House/FindUniqueHouseResolver";
+export { FindFirstHouseResolver } from "./House/FindFirstHouseResolver";
+export { FindManyHouseResolver } from "./House/FindManyHouseResolver";
+export { CreateHouseResolver } from "./House/CreateHouseResolver";
+export { DeleteHouseResolver } from "./House/DeleteHouseResolver";
+export { UpdateHouseResolver } from "./House/UpdateHouseResolver";
+export { DeleteManyHouseResolver } from "./House/DeleteManyHouseResolver";
+export { UpdateManyHouseResolver } from "./House/UpdateManyHouseResolver";
+export { UpsertHouseResolver } from "./House/UpsertHouseResolver";
+export { AggregateHouseResolver } from "./House/AggregateHouseResolver";

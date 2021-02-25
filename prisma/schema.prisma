@@ -24,3 +24,9 @@ model House {
   @@index([userId], name: "houses.userId")
   @@map(name: "houses")
 }
+
+generator typegraphql {
+  provider           = "typegraphql-prisma"
+  output             = "../src/schema/type-graphql"
+  emitTranspiledCode = true
+}
