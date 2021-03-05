@@ -28,6 +28,7 @@ class CoordinatesInput {
   @Field((_type) => Float)
   longitude!: number
 }
+
 @InputType()
 class BoundsInput {
   @Field((_type) => CoordinatesInput)

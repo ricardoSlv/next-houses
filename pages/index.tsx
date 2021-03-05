@@ -7,7 +7,6 @@ import HouseList from 'src/components/houseList'
 import { useLastData } from 'src/utils/useLastData'
 import { useLocalState } from 'src/utils/useLocalState'
 import { HousesQuery, HousesQueryVariables } from 'src/generated/HousesQuery'
-import { data } from 'autoprefixer'
 
 const HOUSES_QUERY = gql`
   query HousesQuery($bounds: BoundsInput!) {

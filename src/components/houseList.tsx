@@ -11,7 +11,7 @@ export default function HouseList({ houses, setHighlightedId }: IProps) {
   return (
     <>
       {houses.map((house) => (
-        <div className='px-6 pt-4  flex flex-wrap'>
+        <div className='px-6 pt-4  flex flex-wrap' key={house.id}>
           <section className='sm:w-full cursor-pointer md:w-1/2'>
             <Link key={house.id} href={`/houses/${house.id}`}>
               <Image
